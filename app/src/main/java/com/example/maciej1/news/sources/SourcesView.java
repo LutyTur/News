@@ -7,5 +7,5 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  */
 
 public interface SourcesView extends MvpView{
-
+    void showSources(String sources);
 }

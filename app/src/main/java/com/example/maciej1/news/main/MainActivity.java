@@ -14,7 +14,7 @@ import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
 import butterknife.ButterKnife;
 
-public class MainActivity extends MvpActivity<SourcesView, SourcesPresenter> implements SourcesView {
+public class MainActivity extends MvpActivity<SourcesView, SourcesPresenter> implements MainActivityView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +35,7 @@ public class MainActivity extends MvpActivity<SourcesView, SourcesPresenter> imp
     public SourcesPresenter createPresenter() {
         return new SourcesPresenter();
     }
+
 
 
 }
