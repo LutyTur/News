@@ -1,6 +1,9 @@
 package com.example.maciej1.news.data;
 
-import org.json.JSONArray;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Maciej1 on 2017-02-12.
@@ -8,8 +11,46 @@ import org.json.JSONArray;
 
 public class SourceEntry {
 
-    private String id, name, description, url, category, language;
-    private JSONArray logos, sortBysAvailable;
+    @SerializedName("id")
+    private String id;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("description")
+    private String description;
+    @SerializedName("url")
+    private String url;
+    @SerializedName("category")
+    private String category;
+    @SerializedName("language")
+    private String language;
+    @SerializedName("country")
+    private String country;
+
+    @SerializedName("urlsToLogos")
+    private LogosUrls logos;
+    @SerializedName("sortBysAvailable")
+    private List<String> sortBysAvailable = new ArrayList<>();
+
+    public SourceEntry(String id, String name, String description, String url, String category,
+                       String language, String country, LogosUrls logos, List<String> sortBysAvailable) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.url = url;
+        this.category = category;
+        this.language = language;
+        this.country = country;
+        this.logos = logos;
+        this.sortBysAvailable = sortBysAvailable;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
     public String getId() {
         return id;
@@ -59,19 +100,20 @@ public class SourceEntry {
         this.language = language;
     }
 
-    public JSONArray getLogos() {
+    public LogosUrls getLogos() {
         return logos;
     }
 
-    public void setLogos(JSONArray logos) {
+    public void setLogos(LogosUrls logos) {
         this.logos = logos;
     }
 
-    public JSONArray getSortBysAvailable() {
+    public List<String> getSortBysAvailable() {
         return sortBysAvailable;
     }
 
-    public void setSortBysAvailable(JSONArray sortBysAvailable) {
+    public void setSortBysAvailable(List<String> sortBysAvailable) {
         this.sortBysAvailable = sortBysAvailable;
     }
+
 }

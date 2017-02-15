@@ -55,7 +55,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         super.onViewCreated(view, savedInstanceState);
 
         mProgressBar.setVisibility(View.VISIBLE);
-        presenter.loadSources();
+        //presenter.loadSources();
+        presenter.setupApiListener();
     }
 
     @Override
