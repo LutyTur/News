@@ -2,9 +2,6 @@ package com.example.maciej1.news.data;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by Maciej1 on 2017-02-14.
- */
 
 public class LogosUrls {
 

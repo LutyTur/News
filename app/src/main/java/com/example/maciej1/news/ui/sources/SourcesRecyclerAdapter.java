@@ -1,4 +1,4 @@
-package com.example.maciej1.news.sources;
+package com.example.maciej1.news.ui.sources;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,33 +11,39 @@ import com.example.maciej1.news.data.SourceEntry;
 
 import java.util.List;
 
-import javax.xml.transform.Source;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-/**
- * Created by Maciej1 on 2017-02-12.
- */
 
 public class SourcesRecyclerAdapter
         extends RecyclerView.Adapter<SourcesRecyclerAdapter.SourcesViewHolder> {
 
-    private List<SourceEntry> mSourcesList;
+    private List<SourceEntry> sourcesList;
 
+    public List<SourceEntry> getSourcesList() {
+        return sourcesList;
+    }
 
-    public class SourcesViewHolder extends RecyclerView.ViewHolder{
+    public void setSourcesList(List<SourceEntry> sourcesList) {
+        this.sourcesList = sourcesList;
+    }
 
+    public class SourcesViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.source_item_title)
         TextView title;
+        @BindView(R.id.source_item_url)
         TextView url;
 
         public SourcesViewHolder(View itemView) {
             super(itemView);
-
-            title = (TextView)itemView.findViewById(R.id.source_item_title);
-            url = (TextView)itemView.findViewById(R.id.source_item_url);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-    public SourcesRecyclerAdapter(List<SourceEntry> sourcesList){
-        this.mSourcesList = sourcesList;
+    public SourcesRecyclerAdapter(List<SourceEntry> sourcesList) {
+        this.sourcesList = sourcesList;
+        setHasStableIds(true);
     }
 
     @Override
@@ -50,7 +56,7 @@ public class SourcesRecyclerAdapter
 
     @Override
     public void onBindViewHolder(SourcesViewHolder holder, int position) {
-        SourceEntry sourceEntry = mSourcesList.get(position);
+        SourceEntry sourceEntry = sourcesList.get(position);
 
         holder.title.setText(sourceEntry.getName());
         holder.url.setText(sourceEntry.getUrl());
@@ -58,8 +64,11 @@ public class SourcesRecyclerAdapter
 
     @Override
     public int getItemCount() {
-        return mSourcesList.size();
+        return sourcesList.size();
     }
 
-
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 }

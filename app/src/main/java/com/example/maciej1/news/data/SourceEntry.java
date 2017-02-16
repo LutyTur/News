@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Maciej1 on 2017-02-12.
- */
 
 public class SourceEntry {
 

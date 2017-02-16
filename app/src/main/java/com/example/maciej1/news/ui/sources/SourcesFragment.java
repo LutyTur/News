@@ -1,4 +1,4 @@
-package com.example.maciej1.news.sources;
+package com.example.maciej1.news.ui.sources;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,30 +9,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Maciej1 on 2017-02-11.
- */
 
 public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
-                                implements SourcesView{
+        implements SourcesView {
 
-    private SourcesRecyclerAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private SourcesRecyclerAdapter recyclerAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
-    @BindView(R.id.sources_progress_bar)ProgressBar mProgressBar;
-    @BindView(R.id.recycler_view)RecyclerView mRecyclerViewList;
+    @BindView(R.id.sources_progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerViewList;
 
     @NonNull
     @Override
@@ -54,22 +52,22 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mProgressBar.setVisibility(View.VISIBLE);
-        //presenter.loadSources();
-        presenter.setupApiListener();
+        progressBar.setVisibility(View.VISIBLE);
+        setupAdapter(new ArrayList<SourceEntry>());
+        presenter.startApiService();
     }
 
     @Override
     public void showSources(List<SourceEntry> sourceEntries) {
-        mProgressBar.setVisibility(View.GONE);
-        setupAdapter(sourceEntries);
-        //mTextView.setText(sources);
+        progressBar.setVisibility(View.GONE);
+        recyclerAdapter.setSourcesList(sourceEntries);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
-    private void setupAdapter(List<SourceEntry> sourceEntries){
-        mAdapter = new SourcesRecyclerAdapter(sourceEntries);
-        mLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerViewList.setLayoutManager(mLayoutManager);
-        mRecyclerViewList.setAdapter(mAdapter);
+    private void setupAdapter(List<SourceEntry> sourceEntries) {
+        recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries);
+        layoutManager = new LinearLayoutManager(getContext());
+        recyclerViewList.setLayoutManager(layoutManager);
+        recyclerViewList.setAdapter(recyclerAdapter);
     }
 }

@@ -6,9 +6,6 @@ import org.json.JSONArray;
 
 import java.util.List;
 
-/**
- * Created by Maciej1 on 2017-02-13.
- */
 
 public class SourcesResponse {
 
@@ -17,7 +14,6 @@ public class SourcesResponse {
 
     @SerializedName("sources")
     private List<SourceEntry> sources;
-
 
 
     public String getStatus() {
