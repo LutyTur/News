@@ -13,6 +13,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String SOURCES_FRAGMENT_TAG = "sources_fragment_tag";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,12 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        SourcesFragment sourcesFragment = new SourcesFragment();
-        fragmentTransaction.add(R.id.content_frame, sourcesFragment).commit();
+        if (savedInstanceState == null) {
+            loadSourcesFragment(new SourcesFragment());
+        }
     }
 
-
+    private void loadSourcesFragment(SourcesFragment sourcesFragment) {
+        sourcesFragment.setArguments(getIntent().getExtras());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, sourcesFragment, SOURCES_FRAGMENT_TAG).commit();
+    }
 }
+

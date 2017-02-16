@@ -15,6 +15,7 @@ import com.example.maciej1.news.data.SourceEntry;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,6 +24,10 @@ import butterknife.ButterKnife;
 
 public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         implements SourcesView {
+
+
+    public static final String POSITION_TAG = "position_tag";
+    private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -43,6 +48,12 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sources, container, false);
 
+        if (savedInstanceState != null) {
+            listPosition = savedInstanceState.getInt(POSITION_TAG);
+        } else {
+            //listPosition = ;
+        }
+
         ButterKnife.bind(this, view);
 
         return view;
@@ -55,6 +66,13 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<SourceEntry>());
         presenter.startApiService();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //listPosition = recyclerAdapter
+        outState.putInt(POSITION_TAG, listPosition);
     }
 
     @Override
