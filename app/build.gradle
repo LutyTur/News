@@ -45,6 +45,8 @@ dependencies {
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
 
+    compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
+
     compile 'com.google.code.gson:gson:2.8.0'
     compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
