@@ -29,7 +29,6 @@ public class SourcesRecyclerAdapter
         extends RecyclerView.Adapter<SourcesRecyclerAdapter.SourcesViewHolder> {
 
     private List<SourceEntry> sourcesList = new ArrayList<>();
-    private int counter = 0;
 
 
     public List<SourceEntry> getSourcesList() {
@@ -46,8 +45,6 @@ public class SourcesRecyclerAdapter
         TextView title;
         @BindView(R.id.source_logo)
         ImageView source_logo;
-        @BindView(R.id.counter)
-        TextView counterTextView;
 
 
         public SourcesViewHolder(View itemView) {
@@ -73,24 +70,16 @@ public class SourcesRecyclerAdapter
     public void onBindViewHolder(SourcesViewHolder holder, int position) {
         SourceEntry sourceEntry = sourcesList.get(position);
 
-        holder.counterTextView.setText(String.valueOf(counter));
-        counter++;
-
-        holder.title.setText(sourceEntry.getName());
+        //holder.title.setText(sourceEntry.getName());
         Picasso.with(holder.itemView.getContext())
-                .load(sourceEntry.getLogos().getSmall()).into(holder.source_logo);
+                .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
     }
 
     @Override
     public int getItemCount() {
         return sourcesList.size();
     }
-    /*
-    @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
-    }
-    */
+
     @Override
     public int getItemViewType(int position) {
         return position;

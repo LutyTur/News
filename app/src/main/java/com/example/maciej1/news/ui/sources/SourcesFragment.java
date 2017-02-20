@@ -3,6 +3,7 @@ package com.example.maciej1.news.ui.sources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,8 +32,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
-    //private RecyclerView.LayoutManager layoutManager;
-    private LinearLayoutManager layoutManager;
+    //private LinearLayoutManager layoutManager;
+    private GridLayoutManager layoutManager;
 
     @BindView(R.id.sources_progress_bar)
     ProgressBar progressBar;
@@ -93,7 +94,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
     private void setupAdapter(List<SourceEntry> sourceEntries) {
         recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries);
-        layoutManager = new LinearLayoutManager(getContext());
+        //layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
