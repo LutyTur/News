@@ -7,5 +7,8 @@ import java.util.List;
 
 
 public interface SourcesView extends MvpView {
+
     void showSources(List<SourceEntry> sourceEntries);
+
+    void inflateArticlesFragment(String id);
 }

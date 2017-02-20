@@ -2,6 +2,7 @@ package com.example.maciej1.news.ui.sources;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.maciej1.news.NewsApplication;
 import com.example.maciej1.news.R;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class SourcesRecyclerAdapter
@@ -39,6 +42,7 @@ public class SourcesRecyclerAdapter
         this.sourcesList = sourcesList;
     }
 
+
     public class SourcesViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.source_item_title)
@@ -51,6 +55,8 @@ public class SourcesRecyclerAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+
+
     }
 
     public SourcesRecyclerAdapter(List<SourceEntry> sourcesList) {
@@ -67,12 +73,19 @@ public class SourcesRecyclerAdapter
     }
 
     @Override
-    public void onBindViewHolder(SourcesViewHolder holder, int position) {
-        SourceEntry sourceEntry = sourcesList.get(position);
+    public void onBindViewHolder(final SourcesViewHolder holder, int position) {
+        final SourceEntry sourceEntry = sourcesList.get(position);
 
-        //holder.title.setText(sourceEntry.getName());
         Picasso.with(holder.itemView.getContext())
                 .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
+
+        holder.source_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String item = sourceEntry.getName();
+                Log.i("Source clicked: ", item);
+            }
+        });
     }
 
     @Override
@@ -84,4 +97,6 @@ public class SourcesRecyclerAdapter
     public int getItemViewType(int position) {
         return position;
     }
+
+
 }

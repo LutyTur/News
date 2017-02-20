@@ -3,6 +3,7 @@ package com.example.maciej1.news.ui.sources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
@@ -22,6 +24,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
+import butterknife.OnItemSelected;
+import butterknife.Optional;
 
 
 public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
@@ -39,6 +45,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     ProgressBar progressBar;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerViewList;
+
 
     @NonNull
     @Override
@@ -92,6 +99,11 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
     }
 
+    @Override
+    public void inflateArticlesFragment(String id) {
+        Log.i("SourcesFragment: ", "inflate fragment");
+    }
+
     private void setupAdapter(List<SourceEntry> sourceEntries) {
         recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries);
         //layoutManager = new LinearLayoutManager(getContext());
@@ -99,4 +111,14 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
+
+    /*
+    @OnItemClick(R.id.recycler_view)
+    public void onSourceClick(View view) {
+        //int itemPosition = recyclerViewList.getChildLayoutPosition(view);
+        int itemPosition = recyclerViewList.getChildAdapterPosition(view);
+        String item = recyclerAdapter.getSourcesList().get(itemPosition).getName();
+        Log.i("Source clicked: ", item);
+    }
+    */
 }
