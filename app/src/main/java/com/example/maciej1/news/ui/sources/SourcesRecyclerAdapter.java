@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,8 +28,10 @@ import butterknife.ButterKnife;
 public class SourcesRecyclerAdapter
         extends RecyclerView.Adapter<SourcesRecyclerAdapter.SourcesViewHolder> {
 
-    private List<SourceEntry> sourcesList;
+    private List<SourceEntry> sourcesList = new ArrayList<>();
     private int counter = 0;
+
+
     public List<SourceEntry> getSourcesList() {
         return sourcesList;
     }
@@ -82,11 +85,14 @@ public class SourcesRecyclerAdapter
     public int getItemCount() {
         return sourcesList.size();
     }
-
+    /*
     @Override
     public long getItemId(int position) {
         return super.getItemId(position);
     }
-
-
+    */
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

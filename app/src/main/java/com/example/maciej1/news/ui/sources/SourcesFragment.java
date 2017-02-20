@@ -84,7 +84,9 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     @Override
     public void showSources(List<SourceEntry> sourceEntries) {
         progressBar.setVisibility(View.GONE);
-        recyclerAdapter.setSourcesList(sourceEntries);
+        //recyclerAdapter.setSourcesList(sourceEntries);
+        //recyclerAdapter.notifyDataSetChanged();
+        setupAdapter(sourceEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
     }
