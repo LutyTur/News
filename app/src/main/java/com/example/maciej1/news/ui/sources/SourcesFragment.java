@@ -3,42 +3,35 @@ package com.example.maciej1.news.ui.sources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
+import com.example.maciej1.news.ui.articles.ArticlesFragment;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import butterknife.OnItemSelected;
-import butterknife.Optional;
 
 
 public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
-        implements SourcesView {
+        implements SourcesView, View.OnClickListener {
 
 
     public static final String POSITION_TAG = "position_tag";
     private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
-    //private LinearLayoutManager layoutManager;
     private GridLayoutManager layoutManager;
 
     @BindView(R.id.sources_progress_bar)
@@ -57,7 +50,6 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sources, container, false);
-
         ButterKnife.bind(this, view);
 
         return view;
@@ -92,8 +84,6 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     @Override
     public void showSources(List<SourceEntry> sourceEntries) {
         progressBar.setVisibility(View.GONE);
-        //recyclerAdapter.setSourcesList(sourceEntries);
-        //recyclerAdapter.notifyDataSetChanged();
         setupAdapter(sourceEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
@@ -101,24 +91,29 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
     @Override
     public void inflateArticlesFragment(String id) {
-        Log.i("SourcesFragment: ", "inflate fragment");
+        ArticlesFragment articlesFragment = new ArticlesFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("id", id);
+        articlesFragment.setArguments(bundle);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, articlesFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void setupAdapter(List<SourceEntry> sourceEntries) {
-        recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries);
-        //layoutManager = new LinearLayoutManager(getContext());
+        recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries, this);
         layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
 
-    /*
-    @OnItemClick(R.id.recycler_view)
-    public void onSourceClick(View view) {
-        //int itemPosition = recyclerViewList.getChildLayoutPosition(view);
-        int itemPosition = recyclerViewList.getChildAdapterPosition(view);
-        String item = recyclerAdapter.getSourcesList().get(itemPosition).getName();
-        Log.i("Source clicked: ", item);
+    @Override
+    public void onClick(View view) {
+        //Log.i("onClick: ", String.valueOf(view.getTag()));
+        presenter.startArticlesFragment((Integer) view.getTag());
     }
-    */
+
 }
