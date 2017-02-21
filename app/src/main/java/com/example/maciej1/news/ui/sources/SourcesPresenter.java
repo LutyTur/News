@@ -19,7 +19,6 @@ public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
 
     private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
 
-
     public void startApiService() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -38,7 +37,7 @@ public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
         });
     }
 
-    public void startArticlesFragment(int position) {
-        getView().inflateArticlesFragment(String.valueOf(position));
+    public void startArticlesFragment(String id) {
+        getView().inflateArticlesFragment(id);
     }
 }

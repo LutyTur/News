@@ -113,7 +113,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     @Override
     public void onClick(View view) {
         //Log.i("onClick: ", String.valueOf(view.getTag()));
-        presenter.startArticlesFragment((Integer) view.getTag());
+        presenter.startArticlesFragment(String.valueOf(view.getTag()));
     }
 
 }

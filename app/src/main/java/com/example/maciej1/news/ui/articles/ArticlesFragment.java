@@ -63,10 +63,10 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
-        presenter.startApiService();
+        presenter.startApiService(id);
     }
 
-    private void setupAdapter(ArrayList<ArticleEntry> articleEntries) {
+    private void setupAdapter(List<ArticleEntry> articleEntries) {
         recyclerAdapter = new ArticlesRecyclerAdapter(articleEntries, this);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerViewList.setLayoutManager(layoutManager);
@@ -75,7 +75,10 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
     @Override
     public void showArticles(List<ArticleEntry> articleEntries) {
-
+        progressBar.setVisibility(View.GONE);
+        setupAdapter(articleEntries);
+        recyclerAdapter.notifyDataSetChanged();
+        //layoutManager.scrollToPositionWithOffset(listPosition, 0);
     }
 
     @Override

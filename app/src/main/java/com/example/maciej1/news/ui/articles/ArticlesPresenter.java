@@ -20,10 +20,11 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
 
     private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
 
-    public void startApiService(){
+    public void startApiService(String source) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ApiResponse> call = apiService.getEnglishSources(API_KEY);
+        Call<ApiResponse> call = apiService.getArticlesFromSource(source, API_KEY);
+        //Log.i("Call: ", call.toString());
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {

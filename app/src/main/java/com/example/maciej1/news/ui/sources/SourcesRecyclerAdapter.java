@@ -77,7 +77,7 @@ public class SourcesRecyclerAdapter
 
         Picasso.with(holder.itemView.getContext())
                 .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
-        holder.itemView.setTag(position);
+        holder.itemView.setTag(sourceEntry.getId());
         holder.cardView.setOnClickListener(holder);
     }
 

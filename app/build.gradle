@@ -51,6 +51,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.interceptorVersion"
 
     testCompile "junit:junit:$rootProject.ext.junitVersion"
     androidTestCompile('com.android.support.test:runner:0.3') {
