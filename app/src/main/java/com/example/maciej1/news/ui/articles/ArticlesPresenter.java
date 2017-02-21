@@ -1,8 +1,40 @@
 package com.example.maciej1.news.ui.articles;
 
+import android.util.Log;
+
+import com.example.maciej1.news.data.ApiClient;
+import com.example.maciej1.news.data.ApiInterface;
+import com.example.maciej1.news.data.ApiResponse;
+import com.example.maciej1.news.data.ArticleEntry;
+import com.example.maciej1.news.data.SourceEntry;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
 
+    private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
+
+    public void startApiService(){
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<ApiResponse> call = apiService.getEnglishSources(API_KEY);
+        call.enqueue(new Callback<ApiResponse>() {
+            @Override
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                List<ArticleEntry> articleEntries = response.body().getArticles();
+                getView().showArticles(articleEntries);
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
+                Log.e("onFailure: ", t.toString());
+            }
+        });
+    }
 }

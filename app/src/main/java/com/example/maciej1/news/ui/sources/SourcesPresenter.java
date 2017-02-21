@@ -5,7 +5,7 @@ import android.util.Log;
 import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.SourceEntry;
-import com.example.maciej1.news.data.SourcesResponse;
+import com.example.maciej1.news.data.ApiResponse;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;
@@ -23,16 +23,16 @@ public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
     public void startApiService() {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<SourcesResponse> call = apiService.getEnglishSources(API_KEY);
-        call.enqueue(new Callback<SourcesResponse>() {
+        Call<ApiResponse> call = apiService.getEnglishSources(API_KEY);
+        call.enqueue(new Callback<ApiResponse>() {
             @Override
-            public void onResponse(Call<SourcesResponse> call, Response<SourcesResponse> response) {
+            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
                 List<SourceEntry> sourceEntries = response.body().getSources();
                 getView().showSources(sourceEntries);
             }
 
             @Override
-            public void onFailure(Call<SourcesResponse> call, Throwable t) {
+            public void onFailure(Call<ApiResponse> call, Throwable t) {
                 Log.e("onFailure: ", t.toString());
             }
         });

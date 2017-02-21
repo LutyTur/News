@@ -8,5 +8,8 @@ import retrofit2.http.Query;
 public interface ApiInterface {
 
     @GET("sources?language=en&")
-    Call<SourcesResponse> getEnglishSources(@Query("api_key") String apiKey);
+    Call<ApiResponse> getEnglishSources(@Query("api_key") String apiKey);
+
+    @GET("articles?source=the-next-web&sortBy=latest&apiKey={API_KEY}")
+    Call<ApiResponse> getArticlesFromSource(@Query("api_key") String apiKey);
 }
