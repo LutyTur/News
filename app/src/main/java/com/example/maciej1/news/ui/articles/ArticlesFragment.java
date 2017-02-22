@@ -36,8 +36,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     ProgressBar progressBar;
     @BindView(R.id.articles_recycler_view)
     RecyclerView recyclerViewList;
-    @BindView(R.id.articles_tv)
-    TextView articlesTextView;
+
 
     @NonNull
     @Override
@@ -59,7 +58,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         super.onViewCreated(view, savedInstanceState);
 
         String id = this.getArguments().getString("id");
-        articlesTextView.setText("Source id: " + id);
 
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
@@ -78,7 +76,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         progressBar.setVisibility(View.GONE);
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
-        //layoutManager.scrollToPositionWithOffset(listPosition, 0);
     }
 
     @Override
