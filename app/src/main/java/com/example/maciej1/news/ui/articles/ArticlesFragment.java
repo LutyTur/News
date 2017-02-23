@@ -3,20 +3,15 @@ package com.example.maciej1.news.ui.articles;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.textservice.TextInfo;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
-import com.example.maciej1.news.data.SourceEntry;
-import com.example.maciej1.news.ui.sources.SourcesRecyclerAdapter;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
@@ -29,8 +24,10 @@ import butterknife.ButterKnife;
 public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresenter>
         implements ArticlesView, View.OnClickListener {
 
+    private static final String POSITION_TAG = "articles_position_tag";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
+    private int listPosition;
 
     @BindView(R.id.articles_progress_bar)
     ProgressBar progressBar;
@@ -64,6 +61,23 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         presenter.startApiService(id);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        listPosition = layoutManager.findFirstVisibleItemPosition();
+        outState.putInt(POSITION_TAG, listPosition);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            listPosition = savedInstanceState.getInt(POSITION_TAG);
+        }
+    }
+
     private void setupAdapter(List<ArticleEntry> articleEntries) {
         recyclerAdapter = new ArticlesRecyclerAdapter(articleEntries, this);
         layoutManager = new LinearLayoutManager(getContext());
@@ -76,6 +90,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         progressBar.setVisibility(View.GONE);
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
+        layoutManager.scrollToPositionWithOffset(listPosition, 0);
     }
 
     @Override

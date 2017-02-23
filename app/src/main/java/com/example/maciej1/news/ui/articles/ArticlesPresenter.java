@@ -6,7 +6,6 @@ import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.ApiResponse;
 import com.example.maciej1.news.data.ArticleEntry;
-import com.example.maciej1.news.data.SourceEntry;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;
@@ -24,7 +23,7 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
         Call<ApiResponse> call = apiService.getArticlesFromSource(source, API_KEY);
-        //Log.i("Call: ", call.toString());
+
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {

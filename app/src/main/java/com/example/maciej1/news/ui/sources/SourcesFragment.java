@@ -28,7 +28,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         implements SourcesView, View.OnClickListener {
 
 
-    public static final String POSITION_TAG = "position_tag";
+    private static final String POSITION_TAG = "sources_position_tag";
     private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
