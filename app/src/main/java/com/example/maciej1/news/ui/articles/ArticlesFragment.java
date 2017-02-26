@@ -1,10 +1,15 @@
 package com.example.maciej1.news.ui.articles;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +33,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
     private int listPosition;
+    private List<ArticleEntry> articlesList;
 
     @BindView(R.id.articles_progress_bar)
     ProgressBar progressBar;
@@ -79,6 +85,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     }
 
     private void setupAdapter(List<ArticleEntry> articleEntries) {
+        articlesList = articleEntries;
         recyclerAdapter = new ArticlesRecyclerAdapter(articleEntries, this);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerViewList.setLayoutManager(layoutManager);
@@ -94,7 +101,30 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     }
 
     @Override
-    public void onClick(View view) {
+    public void showDetailsInCustomTab(String url) {
+        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent.launchUrl(getContext(), Uri.parse(url));
+    }
 
+    @Override
+    public void showDetailsInWebView(String url) {
+
+    }
+
+    @Override
+    public List<ArticleEntry> getArticlesList() {
+        return articlesList;
+    }
+
+    @Override
+    public void onClick(View view) {
+        presenter.showArticleDetails(view);
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
     }
 }

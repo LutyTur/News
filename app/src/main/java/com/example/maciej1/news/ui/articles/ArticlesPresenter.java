@@ -1,11 +1,17 @@
 package com.example.maciej1.news.ui.articles;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.View;
 
+import com.example.maciej1.news.NewsApplication;
 import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.ApiResponse;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.example.maciej1.news.main.MainActivity;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;
@@ -18,6 +24,7 @@ import retrofit2.Response;
 public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
 
     private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
+    private static final String CHROME_PACKAGE = "com.android.chrome";
 
     public void startApiService(String source) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -36,5 +43,27 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
                 Log.e("onFailure: ", t.toString());
             }
         });
+    }
+
+    public void showArticleDetails(View view) {
+        int position = (int) view.getTag();
+        ArticleEntry articleEntry = getView().getArticlesList().get(position);
+
+        PackageManager packageManager = view.getContext().getPackageManager();
+
+        if (isPackageInstalled(CHROME_PACKAGE, packageManager)) {
+            getView().showDetailsInCustomTab(articleEntry.getUrl());
+        } else {
+            // open in WebView
+        }
+    }
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 }
