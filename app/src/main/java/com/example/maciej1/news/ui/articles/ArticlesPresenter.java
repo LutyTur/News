@@ -45,8 +45,13 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         });
     }
 
+    public void startCustomTabService() {
+
+    }
+
     public void showArticleDetails(View view) {
         int position = (int) view.getTag();
+        //int position = (int) getView().getTag();
         ArticleEntry articleEntry = getView().getArticlesList().get(position);
 
         PackageManager packageManager = view.getContext().getPackageManager();

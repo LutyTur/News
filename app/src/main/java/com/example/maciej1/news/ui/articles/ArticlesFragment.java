@@ -1,11 +1,16 @@
 package com.example.maciej1.news.ui.articles;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsCallback;
+import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
+import android.support.customtabs.CustomTabsServiceConnection;
+import android.support.customtabs.CustomTabsSession;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,10 +35,14 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         implements ArticlesView, View.OnClickListener {
 
     private static final String POSITION_TAG = "articles_position_tag";
+    private static final String CHROME_PACKAGE = "com.android.chrome";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
     private int listPosition;
     private List<ArticleEntry> articlesList;
+
+    private CustomTabsClient customTabsClient;
+    private CustomTabsSession customTabsSession;
 
     @BindView(R.id.articles_progress_bar)
     ProgressBar progressBar;
@@ -65,6 +74,26 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
         presenter.startApiService(id);
+        //presenter.startCustomTabService();
+        //startCustomTabService();
+    }
+
+    private void startCustomTabService() {
+        CustomTabsClient.bindCustomTabsService(getContext(), CHROME_PACKAGE,
+                new CustomTabsServiceConnection() {
+                    @Override
+                    public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
+                        customTabsClient = client;
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName componentName) {
+                        customTabsClient = null;
+                    }
+                });
+        customTabsClient.warmup(0);
+        customTabsSession = customTabsClient.newSession(new CustomTabsCallback());
+        customTabsSession.mayLaunchUrl(Uri.parse(""), null, null);
     }
 
     @Override
@@ -106,6 +135,8 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(getContext(), Uri.parse(url));
+
+
     }
 
     @Override
