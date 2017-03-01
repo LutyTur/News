@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsCallback;
 import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
@@ -14,7 +13,6 @@ import android.support.customtabs.CustomTabsSession;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,14 +33,17 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         implements ArticlesView, View.OnClickListener {
 
     private static final String POSITION_TAG = "articles_position_tag";
-    private static final String CHROME_PACKAGE = "com.android.chrome";
+    private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
+    //private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
     private int listPosition;
     private List<ArticleEntry> articlesList;
 
-    private CustomTabsClient customTabsClient;
-    private CustomTabsSession customTabsSession;
+    CustomTabsClient customTabsClient;
+    CustomTabsSession customTabsSession;
+    CustomTabsServiceConnection customTabsServiceConnection;
+    CustomTabsIntent customTabsIntent;
 
     @BindView(R.id.articles_progress_bar)
     ProgressBar progressBar;
@@ -75,11 +76,30 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         setupAdapter(new ArrayList<ArticleEntry>());
         presenter.startApiService(id);
         //presenter.startCustomTabService();
-        //startCustomTabService();
+        startCustomTabService();
     }
 
     private void startCustomTabService() {
-        CustomTabsClient.bindCustomTabsService(getContext(), CHROME_PACKAGE,
+        customTabsServiceConnection = new CustomTabsServiceConnection() {
+            @Override
+            public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
+                customTabsClient = client;
+                customTabsClient.warmup(0L);
+                customTabsSession = customTabsClient.newSession(null);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+                customTabsClient = null;
+            }
+        };
+
+        CustomTabsClient.bindCustomTabsService(
+                getContext(), CHROME_PACKAGE_NAME, customTabsServiceConnection);
+
+
+        /*
+        CustomTabsClient.bindCustomTabsService(getContext(), CHROME_PACKAGE_NAME,
                 new CustomTabsServiceConnection() {
                     @Override
                     public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
@@ -94,6 +114,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         customTabsClient.warmup(0);
         customTabsSession = customTabsClient.newSession(new CustomTabsCallback());
         customTabsSession.mayLaunchUrl(Uri.parse(""), null, null);
+        */
     }
 
     @Override
@@ -127,14 +148,24 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
+
+        //startCustomTabService();
+        String url = articleEntries.get(0).getUrl();
+        customTabsSession.mayLaunchUrl(Uri.parse(url), null, null);
     }
 
     @Override
     public void showDetailsInCustomTab(String url) {
-        CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent = new CustomTabsIntent.Builder(customTabsSession)
+                .setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .setShowTitle(true)
+                .build();
         customTabsIntent.launchUrl(getContext(), Uri.parse(url));
+        //CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        //builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        //CustomTabsIntent customTabsIntent = builder.build();
+        //customTabsIntent.launchUrl(getContext(), Uri.parse(url));
+
 
 
     }
