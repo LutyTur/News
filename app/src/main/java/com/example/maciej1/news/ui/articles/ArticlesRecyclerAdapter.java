@@ -23,6 +23,11 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
     private List<ArticleEntry> articlesList;
     private final View.OnClickListener onClickListener;
 
+    public ArticlesRecyclerAdapter(List<ArticleEntry> articlesList, View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+        this.articlesList = articlesList;
+    }
+
     @Override
     public ArticlesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -74,8 +79,4 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
         }
     }
 
-    public ArticlesRecyclerAdapter(List<ArticleEntry> articlesList, View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-        this.articlesList = articlesList;
-    }
 }

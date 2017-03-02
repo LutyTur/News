@@ -13,6 +13,7 @@ import android.support.customtabs.CustomTabsSession;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,8 +64,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
         ButterKnife.bind(this, view);
 
+        setupOnScrollListener();
+
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -134,6 +138,18 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         }
     }
 
+    private void setupOnScrollListener() {
+        recyclerViewList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                //Log.i("onScrollStateChanged", String.valueOf(newState));
+                Log.i("onScrolled", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
+
+            }
+        });
+    }
+
     private void setupAdapter(List<ArticleEntry> articleEntries) {
         articlesList = articleEntries;
         recyclerAdapter = new ArticlesRecyclerAdapter(articleEntries, this);
@@ -167,7 +183,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         //customTabsIntent.launchUrl(getContext(), Uri.parse(url));
 
 
-
     }
 
     @Override
@@ -189,4 +204,5 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     public Context getContext() {
         return super.getContext();
     }
+
 }
