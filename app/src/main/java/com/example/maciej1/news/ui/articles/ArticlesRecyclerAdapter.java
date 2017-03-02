@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 
 public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecyclerAdapter.ArticlesViewHolder> {
 
+
     private List<ArticleEntry> articlesList;
     private final View.OnClickListener onClickListener;
 
@@ -77,6 +78,14 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
         public void onClick(View view) {
             onClickListener.onClick(itemView);
         }
+    }
+
+    public List<ArticleEntry> getArticlesList() {
+        return articlesList;
+    }
+
+    public ArticleEntry getArticleEntry(int position) {
+        return articlesList.get(position);
     }
 
 }

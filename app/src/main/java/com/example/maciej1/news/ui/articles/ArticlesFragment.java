@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,11 +36,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
     private static final String POSITION_TAG = "articles_position_tag";
     private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
-    //private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
     private int listPosition;
     private List<ArticleEntry> articlesList;
+    private SparseArray<String> preLoadedUrlsList = new SparseArray<>();
 
     CustomTabsClient customTabsClient;
     CustomTabsSession customTabsSession;
@@ -79,7 +80,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
         presenter.startApiService(id);
-        //presenter.startCustomTabService();
         startCustomTabService();
     }
 
@@ -101,24 +101,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         CustomTabsClient.bindCustomTabsService(
                 getContext(), CHROME_PACKAGE_NAME, customTabsServiceConnection);
 
-
-        /*
-        CustomTabsClient.bindCustomTabsService(getContext(), CHROME_PACKAGE_NAME,
-                new CustomTabsServiceConnection() {
-                    @Override
-                    public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
-                        customTabsClient = client;
-                    }
-
-                    @Override
-                    public void onServiceDisconnected(ComponentName componentName) {
-                        customTabsClient = null;
-                    }
-                });
-        customTabsClient.warmup(0);
-        customTabsSession = customTabsClient.newSession(new CustomTabsCallback());
-        customTabsSession.mayLaunchUrl(Uri.parse(""), null, null);
-        */
     }
 
     @Override
@@ -143,17 +125,38 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                //Log.i("onScrollStateChanged", String.valueOf(newState));
-                Log.i("onScrolled", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
-
+                //Log.i("onScrolled", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
+                preLoadUrls();
             }
         });
+    }
+
+    private void preLoadUrls() {
+        int firstItemPos = layoutManager.findFirstVisibleItemPosition();
+        int lastItemPos = layoutManager.findLastVisibleItemPosition();
+
+        if (firstItemPos > -1) {
+            for (int i = firstItemPos; i < lastItemPos + 1; i++) {
+                if (preLoadedUrlsList.indexOfKey(i) < 0) {
+                    String url = recyclerAdapter.getArticleEntry(i).getUrl();
+                    preLoadedUrlsList.put(i, url);
+                    customTabsSession.mayLaunchUrl(Uri.parse(url), null, null);
+                }
+            }
+        }
     }
 
     private void setupAdapter(List<ArticleEntry> articleEntries) {
         articlesList = articleEntries;
         recyclerAdapter = new ArticlesRecyclerAdapter(articleEntries, this);
-        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext()) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                super.onLayoutChildren(recycler, state);
+                //Log.i("showArticles", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
+                //preLoadUrls();
+            }
+        };
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
@@ -165,9 +168,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
 
-        //startCustomTabService();
-        String url = articleEntries.get(0).getUrl();
-        customTabsSession.mayLaunchUrl(Uri.parse(url), null, null);
     }
 
     @Override
@@ -177,12 +177,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
                 .setShowTitle(true)
                 .build();
         customTabsIntent.launchUrl(getContext(), Uri.parse(url));
-        //CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-        //builder.setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        //CustomTabsIntent customTabsIntent = builder.build();
-        //customTabsIntent.launchUrl(getContext(), Uri.parse(url));
-
-
     }
 
     @Override
