@@ -45,13 +45,9 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         });
     }
 
-    public void startCustomTabService() {
-
-    }
 
     public void showArticleDetails(View view) {
         int position = (int) view.getTag();
-        //int position = (int) getView().getTag();
         ArticleEntry articleEntry = getView().getArticlesList().get(position);
 
         PackageManager packageManager = view.getContext().getPackageManager();
@@ -59,7 +55,7 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         if (isPackageInstalled(CHROME_PACKAGE, packageManager)) {
             getView().showDetailsInCustomTab(articleEntry.getUrl());
         } else {
-            // open in WebView
+            getView().showDetailsInWebView(articleEntry.getUrl());
         }
     }
 

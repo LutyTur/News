@@ -10,6 +10,7 @@ import android.support.customtabs.CustomTabsClient;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     CustomTabsServiceConnection customTabsServiceConnection;
     CustomTabsIntent customTabsIntent;
 
+
     @BindView(R.id.articles_progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.articles_recycler_view)
@@ -80,7 +82,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
         presenter.startApiService(id);
-        startCustomTabService();
+
     }
 
     private void startCustomTabService() {
@@ -88,7 +90,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
             @Override
             public void onCustomTabsServiceConnected(ComponentName name, CustomTabsClient client) {
                 customTabsClient = client;
-                customTabsClient.warmup(0L);
+                customTabsClient.warmup(0);
                 customTabsSession = customTabsClient.newSession(null);
             }
 
@@ -100,6 +102,18 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
         CustomTabsClient.bindCustomTabsService(
                 getContext(), CHROME_PACKAGE_NAME, customTabsServiceConnection);
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        startCustomTabService();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
 
     }
 
@@ -125,7 +139,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                //Log.i("onScrolled", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
                 preLoadUrls();
             }
         });
@@ -140,7 +153,13 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
                 if (preLoadedUrlsList.indexOfKey(i) < 0) {
                     String url = recyclerAdapter.getArticleEntry(i).getUrl();
                     preLoadedUrlsList.put(i, url);
-                    customTabsSession.mayLaunchUrl(Uri.parse(url), null, null);
+
+                    if (customTabsSession != null) {
+                        customTabsSession.mayLaunchUrl(Uri.parse(url), null, null);
+                    } else {
+                        Log.e("customTabsSession", String.valueOf(customTabsSession));
+                    }
+
                 }
             }
         }
@@ -153,10 +172,10 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
             @Override
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 super.onLayoutChildren(recycler, state);
-                //Log.i("showArticles", String.valueOf(layoutManager.findFirstVisibleItemPosition()) + " " + String.valueOf(layoutManager.findLastVisibleItemPosition()));
-                //preLoadUrls();
+                preLoadUrls();
             }
         };
+
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
@@ -167,7 +186,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
-
     }
 
     @Override
@@ -181,7 +199,15 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
     @Override
     public void showDetailsInWebView(String url) {
+        DetailsFragment detailsFragment = new DetailsFragment();
+        Bundle extras = new Bundle();
+        extras.putString("url", url);
+        detailsFragment.setArguments(extras);
 
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, detailsFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
     @Override
