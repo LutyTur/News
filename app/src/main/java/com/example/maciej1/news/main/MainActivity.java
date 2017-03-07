@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.ui.sources.SourcesFragment;
+import com.google.firebase.crash.FirebaseCrash;
 
 import butterknife.ButterKnife;
 
@@ -22,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             loadSourcesFragment(new SourcesFragment());
         }
+
+        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
     }
 
     private void loadSourcesFragment(SourcesFragment sourcesFragment) {
