@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-dontwarn com.squareup.picasso.**
+-dontwarn com.hannesdorfmann.mosby.**
+-dontwarn okio.Okio.**
