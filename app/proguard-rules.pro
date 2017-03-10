@@ -16,5 +16,15 @@
 #   public *;
 #}
 -dontwarn com.squareup.picasso.**
+-dontnote com.squareup.picasso.**
 -dontwarn com.hannesdorfmann.mosby.**
--dontwarn okio.Okio.**
+-dontnote com.hannesdorfmann.mosby.**
+-dontwarn org.codehaus.mojo.**
+-dontnote org.codehaus.mojo.**
+-dontwarn com.jakewharton.**
+-dontnote com.jakewharton.**
+-dontwarn com.squareup.**
+-dontnote com.squareup.**
+-dontwarn okio.**
+-dontnote okio.**
+-dontwarn retrofit2.Platform$Java8
