@@ -9,6 +9,10 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import butterknife.ButterKnife;
 
+import com.crashlytics.android.Crashlytics;
+
+import io.fabric.sdk.android.Fabric;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String SOURCES_FRAGMENT_TAG = "sources_fragment_tag";
@@ -16,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
@@ -24,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             loadSourcesFragment(new SourcesFragment());
         }
 
-        FirebaseCrash.report(new Exception("My first Android non-fatal error"));
+        //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
     }
 
     private void loadSourcesFragment(SourcesFragment sourcesFragment) {
