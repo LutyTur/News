@@ -69,13 +69,16 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     testCompile "org.mockito:mockito-core:$rootProject.ext.mockitoVersion"
-    compile 'com.google.code.gson:gson:2.8.0'
     compile "com.google.firebase:firebase-crash:$rootProject.ext.firebaseVersion"
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
+    compile "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
+    
+    compile 'com.google.code.gson:gson:2.8.0'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }
 
 apply plugin: 'com.google.gms.google-services'

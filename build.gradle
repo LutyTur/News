@@ -41,8 +41,9 @@ ext {
     interceptorVersion = "3.3.1"
     picassoVersion = "2.5.2"
 
+    firebaseVersion = "10.2.0"
+
     espressoVersion = "2.2.2"
     junitVersion = "4.12"
     mockitoVersion = "1.10.19"
-    firebaseVersion = "10.0.1"
 }
