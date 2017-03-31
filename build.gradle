@@ -21,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
@@ -42,6 +43,7 @@ ext {
     picassoVersion = "2.5.2"
 
     firebaseVersion = "10.2.0"
+    firebaseUiVersion = "1.2.0"
 
     espressoVersion = "2.2.2"
     junitVersion = "4.12"

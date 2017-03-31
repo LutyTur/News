@@ -73,6 +73,8 @@ dependencies {
     compile "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
     compile "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
 
+    compile "com.firebaseui:firebase-ui:$rootProject.ext.firebaseUiVersion"
+
     compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.maciej1.news">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +11,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        >
 
         <activity android:name=".main.MainActivity">
             <intent-filter>
@@ -20,6 +22,7 @@
             </intent-filter>
         </activity>
         <meta-data
+            tools:node="replace"
             android:name="io.fabric.ApiKey"
             android:value="e6837aca33003667e2c54085f01fbc127472e4eb" />
     </application>
