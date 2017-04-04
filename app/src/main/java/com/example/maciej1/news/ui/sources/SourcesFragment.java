@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
 import com.example.maciej1.news.ui.articles.ArticlesFragment;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
@@ -29,10 +30,13 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
 
     private static final String POSITION_TAG = "sources_position_tag";
+    private static final String SCREEN_SOURCES = "sources_screen";
     private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
     private GridLayoutManager layoutManager;
+
+    private FirebaseAnalytics firebaseAnalytics;
 
     @BindView(R.id.sources_progress_bar)
     ProgressBar progressBar;
@@ -52,6 +56,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         View view = inflater.inflate(R.layout.fragment_sources, container, false);
         ButterKnife.bind(this, view);
 
+        setupFirebaseAnalytics();
         return view;
     }
 
@@ -108,6 +113,16 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         layoutManager = new GridLayoutManager(getContext(), 2);
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
+    }
+
+
+    private void setupFirebaseAnalytics() {
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, SCREEN_SOURCES);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, this.getClass().getSimpleName());
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     @Override

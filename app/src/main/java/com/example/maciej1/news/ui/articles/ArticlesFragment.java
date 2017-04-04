@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
@@ -36,12 +37,15 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         implements ArticlesView, View.OnClickListener {
 
     private static final String POSITION_TAG = "articles_position_tag";
+    private static final String SCREEN_ARTICLES = "articles_screen";
     private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
     private int listPosition;
     private List<ArticleEntry> articlesList;
     private SparseArray<String> preLoadedUrlsList = new SparseArray<>();
+
+    FirebaseAnalytics firebaseAnalytics;
 
     CustomTabsClient customTabsClient;
     CustomTabsSession customTabsSession;
@@ -77,7 +81,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+
         String id = this.getArguments().getString("id");
+
+        createFirebaseEvent(id);
 
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
@@ -178,6 +186,13 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
+    }
+
+    private void createFirebaseEvent(String id) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, SCREEN_ARTICLES);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, id);
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
     @Override
