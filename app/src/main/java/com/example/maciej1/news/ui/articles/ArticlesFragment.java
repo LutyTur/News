@@ -71,6 +71,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
         ButterKnife.bind(this, view);
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         setupOnScrollListener();
 
         return view;
@@ -81,10 +82,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
-
         String id = this.getArguments().getString("id");
-
         createFirebaseEvent(id);
 
         progressBar.setVisibility(View.VISIBLE);
