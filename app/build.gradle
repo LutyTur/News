@@ -56,7 +56,7 @@ dependencies {
     compile "com.hannesdorfmann.mosby:viewstate:$rootProject.ext.mosbyLibraryVersion"
 
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
-    apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
 
     compile "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
 

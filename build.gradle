@@ -34,10 +34,10 @@ ext {
     minSdkVersion = 21
     targetSdkVersion = 25
     buildToolsVersion = "25.0.2"
-    supportLibraryVersion = "25.3.0"
+    supportLibraryVersion = "25.3.1"
     daggerVersion = "2.4"
     mosbyLibraryVersion = "2.0.1"
-    butterknifeVersion = "8.5.1"
+    butterknifeVersion = "8.8.1"
     retrofitVersion = "2.1.0"
     interceptorVersion = "3.3.1"
     picassoVersion = "2.5.2"
