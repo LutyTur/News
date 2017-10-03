@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        //classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.google.gms:google-services:3.0.0'
@@ -21,6 +21,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
         maven { url 'https://maven.fabric.io/public' }
     }
 }
@@ -30,12 +31,12 @@ task clean(type: Delete) {
 }
 
 ext {
-    compileSdkVersion = 25
+    compileSdkVersion = 26
     minSdkVersion = 21
-    targetSdkVersion = 25
-    buildToolsVersion = "25.0.2"
-    supportLibraryVersion = "25.3.1"
-    daggerVersion = "2.4"
+    targetSdkVersion = 26
+    buildToolsVersion = "26.0.1"
+    supportLibraryVersion = "26.0.1"
+    daggerVersion = "2.6"
     mosbyLibraryVersion = "2.0.1"
     butterknifeVersion = "8.8.1"
     retrofitVersion = "2.1.0"

@@ -5,12 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
@@ -34,7 +36,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     private int listPosition;
 
     private SourcesRecyclerAdapter recyclerAdapter;
-    private GridLayoutManager layoutManager;
+//    private GridLayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
 
     private FirebaseAnalytics firebaseAnalytics;
 
@@ -92,6 +95,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         setupAdapter(sourceEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
+
     }
 
     @Override
@@ -110,7 +114,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
     private void setupAdapter(List<SourceEntry> sourceEntries) {
         recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries, this);
-        layoutManager = new GridLayoutManager(getContext(), 2);
+//        layoutManager = new GridLayoutManager(getContext(), 2);
+        layoutManager = new LinearLayoutManager(getContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
