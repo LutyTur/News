@@ -33,13 +33,12 @@ public class SourcesRecyclerAdapter
         this.sourcesList = sourcesList;
     }
 
-
     public class SourcesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.source_item_title)
         TextView title;
-        @BindView(R.id.source_logo)
-        ImageView source_logo;
+//        @BindView(R.id.source_logo)
+//        ImageView source_logo;
         @BindView(R.id.source_item_card)
         CardView cardView;
 
@@ -75,8 +74,9 @@ public class SourcesRecyclerAdapter
     public void onBindViewHolder(final SourcesViewHolder holder, int position) {
         final SourceEntry sourceEntry = sourcesList.get(position);
 
-        Picasso.with(holder.itemView.getContext())
-                .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
+//        Picasso.with(holder.itemView.getContext())
+//                .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
+        holder.title.setText(sourceEntry.getName());
         holder.itemView.setTag(sourceEntry.getId());
         holder.cardView.setOnClickListener(holder);
     }

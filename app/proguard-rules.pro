@@ -21,8 +21,6 @@
 -dontnote com.hannesdorfmann.mosby.**
 -dontwarn org.codehaus.mojo.**
 -dontnote org.codehaus.mojo.**
--dontwarn com.jakewharton.**
--dontnote com.jakewharton.**
 -dontwarn com.squareup.**
 -dontnote com.squareup.**
 -dontwarn okio.**
