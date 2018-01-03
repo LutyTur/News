@@ -4,10 +4,13 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.View;
 
+import com.example.maciej1.news.NewsApplication;
+import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.ApiResponse;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.example.maciej1.news.main.MainActivity;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;
@@ -19,13 +22,13 @@ import retrofit2.Response;
 
 public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
 
-    private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
+
     private static final String CHROME_PACKAGE = "com.android.chrome";
 
-    public void startApiService(String source) {
+    public void startApiService(String source, String apiKey) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ApiResponse> call = apiService.getArticlesFromSource(source, API_KEY);
+        Call<ApiResponse> call = apiService.getArticlesFromSource(source, apiKey);
 
         call.enqueue(new Callback<ApiResponse>() {
             @Override

@@ -17,13 +17,11 @@ import retrofit2.Response;
 
 public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
 
-    private static final String API_KEY = "c170c634ec2a4381aac741f46d9aee4d";
 
-
-    public void startApiService() {
+    public void startApiService(String apiKey) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<ApiResponse> call = apiService.getEnglishSources(API_KEY);
+        Call<ApiResponse> call = apiService.getEnglishSources(apiKey);
         call.enqueue(new Callback<ApiResponse>() {
             @Override
             public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {

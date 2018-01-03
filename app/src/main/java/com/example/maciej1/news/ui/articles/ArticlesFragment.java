@@ -87,8 +87,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<ArticleEntry>());
-        presenter.startApiService(id);
-
+        presenter.startApiService(id, getResources().getString(R.string.news_api_key));
     }
 
     private void startCustomTabService() {

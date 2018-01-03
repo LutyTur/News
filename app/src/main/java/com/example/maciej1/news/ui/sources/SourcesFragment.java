@@ -65,7 +65,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
         progressBar.setVisibility(View.VISIBLE);
         setupAdapter(new ArrayList<SourceEntry>());
-        presenter.startApiService();
+        presenter.startApiService(getResources().getString(R.string.news_api_key));
     }
 
     @Override

@@ -24,7 +24,7 @@
         <meta-data
             tools:node="replace"
             android:name="io.fabric.ApiKey"
-            android:value="e6837aca33003667e2c54085f01fbc127472e4eb" />
+            android:value="@string/fabric_api_key" />
     </application>
 
 </manifest>
