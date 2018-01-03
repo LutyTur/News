@@ -4,9 +4,8 @@ import android.util.Log;
 
 import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
-import com.example.maciej1.news.data.SourceEntry;
 import com.example.maciej1.news.data.ApiResponse;
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.example.maciej1.news.data.SourceEntry;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;

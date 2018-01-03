@@ -2,8 +2,6 @@ package com.example.maciej1.news.data;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-
 import java.util.List;
 
 

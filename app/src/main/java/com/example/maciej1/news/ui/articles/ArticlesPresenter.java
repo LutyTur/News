@@ -1,17 +1,13 @@
 package com.example.maciej1.news.ui.articles;
 
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.view.View;
 
-import com.example.maciej1.news.NewsApplication;
 import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.ApiResponse;
 import com.example.maciej1.news.data.ArticleEntry;
-import com.example.maciej1.news.main.MainActivity;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <ProgressBar
         android:id="@+id/articles_progress_bar"
         style="@android:style/Widget.Holo.ProgressBar"

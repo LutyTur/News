@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.ui.sources.SourcesFragment;
 import com.firebase.ui.auth.AuthUI;
@@ -20,12 +21,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import butterknife.ButterKnife;
-
-import com.crashlytics.android.Crashlytics;
-
 import java.util.Arrays;
 
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
-    //@BindView(R.id.app_bar)
-    //Toolbar appBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +45,11 @@ public class MainActivity extends AppCompatActivity {
         setupFirebaseAuthentication();
 
         setContentView(R.layout.activity_main);
-        //setSupportActionBar(appBar);
-
 
         if (savedInstanceState == null) {
             loadSourcesFragment(new SourcesFragment());
         }
 
-        //FirebaseCrash.report(new Exception("My first Android non-fatal error"));
     }
 
     @Override
@@ -75,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_log_in:
                 // log in
-                //Log.i("onOptionsItemSelected", "log_in");
                 inflateSignInActivity();
                 return true;
             default:
@@ -92,15 +84,12 @@ public class MainActivity extends AppCompatActivity {
 
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
-                //startActivity(SignedInActivity.createIntent(this, response));
-                //finish();
                 Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
-                    //showSnackbar(R.string.sign_in_cancelled);
                     return;
                 }
 
@@ -117,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void inflateSignInActivity(){
+    private void inflateSignInActivity() {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()

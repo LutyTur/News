@@ -5,12 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +35,6 @@ public class SourcesRecyclerAdapter
 
         @BindView(R.id.source_item_title)
         TextView title;
-//        @BindView(R.id.source_logo)
-//        ImageView source_logo;
         @BindView(R.id.source_item_card)
         CardView cardView;
 
@@ -74,8 +70,6 @@ public class SourcesRecyclerAdapter
     public void onBindViewHolder(final SourcesViewHolder holder, int position) {
         final SourceEntry sourceEntry = sourcesList.get(position);
 
-//        Picasso.with(holder.itemView.getContext())
-//                .load(sourceEntry.getLogos().getLarge()).into(holder.source_logo);
         holder.title.setText(sourceEntry.getName());
         holder.itemView.setTag(sourceEntry.getId());
         holder.cardView.setOnClickListener(holder);
@@ -90,6 +84,5 @@ public class SourcesRecyclerAdapter
     public int getItemViewType(int position) {
         return position;
     }
-
 
 }
