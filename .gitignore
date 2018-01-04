@@ -1,3 +1,16 @@
+### Android ###
+# Built application files
+*.apk
+*.ap_
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+
 *.iml
 .gradle
 /local.properties
