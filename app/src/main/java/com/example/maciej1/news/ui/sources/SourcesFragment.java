@@ -6,7 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -28,6 +32,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         implements SourcesView, View.OnClickListener {
 
 
+    private static final String TAG = SourcesFragment.class.getSimpleName();
     private static final String POSITION_TAG = "sources_position_tag";
     private static final String SCREEN_SOURCES = "sources_screen";
     private int listPosition;
@@ -53,6 +58,7 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sources, container, false);
+        setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
 
         setupFirebaseAnalytics();
@@ -129,4 +135,25 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         presenter.startArticlesFragment(String.valueOf(view.getTag()));
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.app_bar_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                // refresh
+                Log.i(TAG, "refresh");
+                return true;
+//            case R.id.action_log_in:
+//                // log in
+//                //inflateSignInActivity();
+//                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
