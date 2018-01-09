@@ -12,14 +12,17 @@ import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
@@ -36,11 +39,13 @@ import butterknife.ButterKnife;
 public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresenter>
         implements ArticlesView, View.OnClickListener {
 
+    private static final String TAG = ArticlesFragment.class.getSimpleName();
     private static final String POSITION_TAG = "articles_position_tag";
     private static final String SCREEN_ARTICLES = "articles_screen";
     private static final String CHROME_PACKAGE_NAME = "com.android.chrome";
     private ArticlesRecyclerAdapter recyclerAdapter;
     private LinearLayoutManager layoutManager;
+    private String sourceId;
     private int listPosition;
     private List<ArticleEntry> articlesList;
     private SparseArray<String> preLoadedUrlsList = new SparseArray<>();
@@ -53,10 +58,10 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     CustomTabsIntent customTabsIntent;
 
 
-    @BindView(R.id.articles_progress_bar)
-    ProgressBar progressBar;
     @BindView(R.id.articles_recycler_view)
     RecyclerView recyclerViewList;
+    @BindView(R.id.swipe_refresh_articles)
+    SwipeRefreshLayout swipeRefreshLayout;
 
 
     @NonNull
@@ -69,10 +74,12 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_articles, container, false);
+        setHasOptionsMenu(true);
         ButterKnife.bind(this, view);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
         setupOnScrollListener();
+        setOnSwipeRefreshListener();
 
         return view;
     }
@@ -82,10 +89,13 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        String id = this.getArguments().getString("id");
-        createFirebaseEvent(id);
+        sourceId = this.getArguments().getString("id");
+        createFirebaseEvent(sourceId);
+        loadNewsFromSource(sourceId);
+    }
 
-        progressBar.setVisibility(View.VISIBLE);
+    private void loadNewsFromSource(String id) {
+        swipeRefreshLayout.setRefreshing(true);
         setupAdapter(new ArrayList<ArticleEntry>());
         presenter.startApiService(id, getResources().getString(R.string.news_api_key));
     }
@@ -107,7 +117,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
         CustomTabsClient.bindCustomTabsService(
                 getContext(), CHROME_PACKAGE_NAME, customTabsServiceConnection);
-
     }
 
     @Override
@@ -119,7 +128,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     @Override
     public void onStop() {
         super.onStop();
-
     }
 
     @Override
@@ -194,10 +202,10 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
 
     @Override
     public void showArticles(List<ArticleEntry> articleEntries) {
-        progressBar.setVisibility(View.GONE);
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -223,6 +231,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     }
 
     @Override
+    public void reloadFragment() {
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    @Override
     public List<ArticleEntry> getArticlesList() {
         return articlesList;
     }
@@ -236,5 +249,33 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     public Context getContext() {
         return super.getContext();
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                // refresh
+                presenter.refreshList();
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void setOnSwipeRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                reloadFragment();
+            }
+        });
+    }
+
 
 }

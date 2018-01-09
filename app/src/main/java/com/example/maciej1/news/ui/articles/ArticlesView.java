@@ -15,6 +15,8 @@ public interface ArticlesView extends MvpView {
 
     void showDetailsInWebView(String url);
 
+    void reloadFragment();
+
     List<ArticleEntry> getArticlesList();
 
     Context getContext();

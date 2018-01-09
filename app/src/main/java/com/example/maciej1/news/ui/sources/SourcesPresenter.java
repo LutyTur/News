@@ -40,4 +40,8 @@ public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
     public void startArticlesFragment(String id) {
         getView().inflateArticlesFragment(id);
     }
+
+    public void reloadFragment(){
+        getView().reloadFragment();
+    }
 }

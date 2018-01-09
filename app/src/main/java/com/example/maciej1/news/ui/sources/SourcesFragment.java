@@ -4,16 +4,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.SourceEntry;
@@ -42,8 +41,8 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
     private FirebaseAnalytics firebaseAnalytics;
 
-    @BindView(R.id.sources_progress_bar)
-    ProgressBar progressBar;
+    @BindView(R.id.swipe_refresh_sources)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerViewList;
 
@@ -69,9 +68,11 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        progressBar.setVisibility(View.VISIBLE);
+        setOnSwipeRefreshListener();
         setupAdapter(new ArrayList<SourceEntry>());
         presenter.startApiService(getResources().getString(R.string.news_api_key));
+
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     @Override
@@ -93,10 +94,10 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
 
     @Override
     public void showSources(List<SourceEntry> sourceEntries) {
-        progressBar.setVisibility(View.GONE);
         setupAdapter(sourceEntries);
         recyclerAdapter.notifyDataSetChanged();
         layoutManager.scrollToPositionWithOffset(listPosition, 0);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -113,13 +114,39 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         transaction.commit();
     }
 
+    @Override
+    public void onClick(View view) {
+        presenter.startArticlesFragment(String.valueOf(view.getTag()));
+    }
+
+    @Override
+    public void reloadFragment() {
+        getFragmentManager().beginTransaction().detach(this).attach(this).commit();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                presenter.reloadFragment();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void setupAdapter(List<SourceEntry> sourceEntries) {
         recyclerAdapter = new SourcesRecyclerAdapter(sourceEntries, this);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerViewList.setLayoutManager(layoutManager);
         recyclerViewList.setAdapter(recyclerAdapter);
     }
-
 
     private void setupFirebaseAnalytics() {
         firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
@@ -130,30 +157,12 @@ public class SourcesFragment extends MvpFragment<SourcesView, SourcesPresenter>
         firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
     }
 
-    @Override
-    public void onClick(View view) {
-        presenter.startArticlesFragment(String.valueOf(view.getTag()));
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.app_bar_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                // refresh
-                Log.i(TAG, "refresh");
-                return true;
-//            case R.id.action_log_in:
-//                // log in
-//                //inflateSignInActivity();
-//                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    private void setOnSwipeRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.reloadFragment();
+            }
+        });
     }
 }
