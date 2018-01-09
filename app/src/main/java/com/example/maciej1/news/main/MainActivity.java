@@ -28,6 +28,7 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final String SOURCES_FRAGMENT_TAG = "sources_fragment_tag";
     private static final int RC_SIGN_IN = 123;
     private FirebaseAnalytics firebaseAnalytics;
@@ -62,12 +63,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                // refresh
-                Log.i("onOptionsItemSelected", "refresh");
-                return true;
+//            case R.id.action_refresh:
+//                // refresh
+//                Log.i(TAG, "refresh");
+//                return true;
             case R.id.action_log_in:
                 // log in
+                Log.i(TAG, "Log in");
                 inflateSignInActivity();
                 return true;
             default:
