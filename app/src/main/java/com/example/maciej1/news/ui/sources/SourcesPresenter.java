@@ -36,7 +36,6 @@ public class SourcesPresenter extends MvpBasePresenter<SourcesView> {
         });
     }
 
-
     public void startArticlesFragment(String id) {
         getView().inflateArticlesFragment(id);
     }
