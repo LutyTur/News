@@ -12,16 +12,20 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.example.maciej1.news.R;
+import com.example.maciej1.news.ui.favourites.FavouritesFragment;
 import com.example.maciej1.news.ui.sources.SourcesFragment;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String SOURCES_FRAGMENT_TAG = "sources_fragment_tag";
+    private static final String FAVOURITES_FRAGMENT_TAG = "favourites_fragment_tag";
     private static final int RC_SIGN_IN = 123;
     private FirebaseAnalytics firebaseAnalytics;
     private FirebaseAuth firebaseAuth;
@@ -64,13 +69,30 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_log_in:
-                // log in
-                Log.i(TAG, "Log in");
-                inflateSignInActivity();
+                if (firebaseAuth.getCurrentUser() == null) {
+                    inflateSignInActivity();
+                } else {
+                    signOut();
+                }
                 return true;
+            case R.id.action_favourites:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, new FavouritesFragment(), FAVOURITES_FRAGMENT_TAG)
+                        .commit();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (firebaseAuth.getCurrentUser() == null) {
+            menu.findItem(R.id.action_log_in).setTitle(R.string.sign_in);
+        } else {
+            menu.findItem(R.id.action_log_in).setTitle(R.string.sign_out);
+        }
+        return true;
     }
 
     @Override
@@ -83,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
                 Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
+
                 return;
             } else {
                 // Sign in failed
@@ -109,10 +132,20 @@ public class MainActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(false)
-                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                        .setProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                         .build(),
                 RC_SIGN_IN);
+    }
+
+    private void signOut() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getApplication(), "Signed out", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void loadSourcesFragment(SourcesFragment sourcesFragment) {

@@ -10,6 +10,13 @@ import com.example.maciej1.news.data.ApiClient;
 import com.example.maciej1.news.data.ApiInterface;
 import com.example.maciej1.news.data.ApiResponse;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.util.List;
@@ -21,8 +28,11 @@ import retrofit2.Response;
 
 public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
 
-
+    private static final String TAG = ArticlesPresenter.class.getSimpleName();
     private static final String CHROME_PACKAGE = "com.android.chrome";
+
+//    private DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+//    int counter = 0;
 
     public void startApiService(String source, String apiKey) {
         ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
@@ -44,7 +54,6 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         });
     }
 
-
     public void showArticleDetails(View view) {
         int position = (int) view.getTag();
         ArticleEntry articleEntry = getView().getArticlesList().get(position);
@@ -52,14 +61,21 @@ public class ArticlesPresenter extends MvpBasePresenter<ArticlesView> {
         PackageManager packageManager = view.getContext().getPackageManager();
 
         if (isPackageInstalled(CHROME_PACKAGE, packageManager)) {
-            getView().showDetailsInCustomTab(articleEntry.getUrl());
+            getView().showDetailsInCustomTab(articleEntry);
         } else {
-            getView().showDetailsInWebView(articleEntry.getUrl());
+            getView().showDetailsInWebView(articleEntry);
         }
     }
 
-    public void refreshList() {
+    void refreshList() {
         getView().reloadFragment();
+    }
+
+    void addToFavourites(ArticleEntry articleEntry){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("users/" + user.getUid());
+
+        databaseReference.push().setValue(articleEntry);
     }
 
     private boolean isPackageInstalled(String packageName, PackageManager packageManager) {

@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">News</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
+    <string name="favourites">Favourites</string>
+    <string name="title_sources_fragment">News sources</string>
+    <string name="title_articles_fragment">News articles</string>
+    <string name="title_favourites_fragment">Favourites</string>
 </resources>

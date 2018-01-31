@@ -9,6 +9,10 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_log_in"
-        android:title="Log in"></item>
+        android:title=""></item>
+
+    <item
+        android:id="@+id/action_favourites"
+        android:title="@string/favourites"></item>
 
 </menu>

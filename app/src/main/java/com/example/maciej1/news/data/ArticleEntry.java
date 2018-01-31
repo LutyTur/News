@@ -27,6 +27,10 @@ public class ArticleEntry {
         this.publishedAt = publishedAt;
     }
 
+    public ArticleEntry() {
+
+    }
+
     public String getAuthor() {
         return author;
     }

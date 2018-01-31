@@ -21,10 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".ui.articles.ArticlesBroadcastReceiver"/>
+
+
         <meta-data
             tools:node="replace"
             android:name="io.fabric.ApiKey"
-            android:value="@string/fabric_api_key" />
+            android:value="e6837aca33003667e2c54085f01fbc127472e4eb" />
     </application>
 
 </manifest>

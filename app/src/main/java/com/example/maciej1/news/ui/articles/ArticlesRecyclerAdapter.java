@@ -89,8 +89,4 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
         return articlesList.get(position);
     }
 
-//    private boolean isTitleTooLarge(TextView textView, String title) {
-//        float textWidth = textView.getPaint().measureText(title);
-//        return (textWidth >= textView.getMeasuredWidth());
-//    }
 }
