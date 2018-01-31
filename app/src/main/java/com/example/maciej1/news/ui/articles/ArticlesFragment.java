@@ -1,11 +1,9 @@
 package com.example.maciej1.news.ui.articles;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,8 +16,9 @@ import android.support.customtabs.CustomTabsServiceConnection;
 import android.support.customtabs.CustomTabsSession;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,6 +33,7 @@ import android.view.ViewGroup;
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.gson.Gson;
 import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
@@ -41,11 +41,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 
 
 public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresenter>
@@ -92,6 +88,7 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         ButterKnife.bind(this, view);
 
         firebaseAnalytics = FirebaseAnalytics.getInstance(getContext());
+        setActionBar();
         setOnArticleFavouriteListener();
         setupOnScrollListener();
         setOnSwipeRefreshListener();
@@ -224,16 +221,18 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     }
 
     @Override
-    public void showDetailsInCustomTab(String url) {
+    public void showDetailsInCustomTab(ArticleEntry articleEntry) {
         Bitmap iconBitmap = BitmapFactory
                 .decodeResource(getResources(), R.drawable.ic_favorite_white_24dp);
 
+        String url = articleEntry.getUrl();
+
         Intent intent = new Intent(getContext(), ArticlesBroadcastReceiver.class);
-//        Intent intent = new Intent("abc");
-        intent.putExtra("FAV_URL", url);
+        intent.putExtra("article_entry", new Gson().toJson(articleEntry));
 
         int requestCode = 100;
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent
+                .getBroadcast(getContext(), requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         customTabsIntent = new CustomTabsIntent.Builder(customTabsSession)
                 .setToolbarColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
@@ -243,12 +242,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         customTabsIntent.launchUrl(getContext(), Uri.parse(url));
     }
 
-
     @Override
-    public void showDetailsInWebView(String url) {
+    public void showDetailsInWebView(ArticleEntry articleEntry) {
         DetailsFragment detailsFragment = new DetailsFragment();
         Bundle extras = new Bundle();
-        extras.putString("url", url);
+        extras.putString("url", articleEntry.getUrl());
         detailsFragment.setArguments(extras);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -305,22 +303,25 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     }
 
     private void setOnArticleFavouriteListener() {
+        ObservableFavourites.getInstance().deleteObservers();
         ObservableFavourites.getInstance().addObserver(this);
     }
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        Log.i(TAG, String.valueOf(arg));
+        // Method called when ArticlesBroadcastReceiver observed
+        // favourite button press inside article chrome custom tab.
 
+//        Log.i(TAG, "update");
+        ArticleEntry articleEntry = (ArticleEntry) arg;
+        presenter.addToFavourites(articleEntry);
     }
 
+    private void setActionBar() {
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.title_articles_fragment);
+        }
+    }
 
-//    public static class ArticlesBroadcastReceiver extends BroadcastReceiver {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            String test = intent.getExtras().getString("FAV_URL");
-//            Log.i("receiver", test);
-//
-//        }
-//    }
 }
