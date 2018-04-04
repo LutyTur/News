@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,8 +22,8 @@ import android.view.ViewGroup;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.example.maciej1.news.main.BaseArticlesFragment;
 import com.example.maciej1.news.ui.articles.DetailsFragment;
-import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavouritesFragment extends MvpFragment<FavouritesView, FavouritesPresenter>
+public class FavouritesFragment extends BaseArticlesFragment<FavouritesView, FavouritesPresenter>
         implements FavouritesView, View.OnClickListener {
 
     private static final String TAG = FavouritesFragment.class.getSimpleName();
@@ -82,12 +81,10 @@ public class FavouritesFragment extends MvpFragment<FavouritesView, FavouritesPr
     }
 
     @Override
-    public void showFavouritesList(List<ArticleEntry> articleEntries) {
+    public void showArticles(List<ArticleEntry> articleEntries) {
         setupAdapter(articleEntries);
         recyclerAdapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
-
-        Log.i(TAG, "showFavouritesList");
     }
 
     @Override
@@ -159,7 +156,7 @@ public class FavouritesFragment extends MvpFragment<FavouritesView, FavouritesPr
     }
 
     private void setActionBar() {
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(R.string.title_favourites_fragment);
             actionBar.setDisplayHomeAsUpEnabled(true);

@@ -32,19 +32,18 @@ import android.view.ViewGroup;
 
 import com.example.maciej1.news.R;
 import com.example.maciej1.news.data.ArticleEntry;
+import com.example.maciej1.news.main.BaseArticlesFragment;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
-import com.hannesdorfmann.mosby.mvp.MvpFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
 
 
-public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresenter>
+public class ArticlesFragment extends BaseArticlesFragment<ArticlesView, ArticlesPresenter>
         implements ArticlesView, View.OnClickListener, java.util.Observer {
 
     private static final String TAG = ArticlesFragment.class.getSimpleName();
@@ -57,8 +56,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     private int listPosition;
     private List<ArticleEntry> articlesList;
     private SparseArray<String> preLoadedUrlsList = new SparseArray<>();
-
-    Observer<Integer> observer;
 
     FirebaseAnalytics firebaseAnalytics;
 
@@ -73,12 +70,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
     @BindView(R.id.swipe_refresh_articles)
     SwipeRefreshLayout swipeRefreshLayout;
 
-
-    @NonNull
-    @Override
-    public ArticlesPresenter createPresenter() {
-        return new ArticlesPresenter();
-    }
 
     @Nullable
     @Override
@@ -96,6 +87,11 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         return view;
     }
 
+    @NonNull
+    @Override
+    public ArticlesPresenter createPresenter() {
+        return new ArticlesPresenter();
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -184,7 +180,6 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
                     } else {
                         Log.e("customTabsSession", String.valueOf(customTabsSession));
                     }
-
                 }
             }
         }
@@ -312,16 +307,14 @@ public class ArticlesFragment extends MvpFragment<ArticlesView, ArticlesPresente
         // Method called when ArticlesBroadcastReceiver observed
         // favourite button press inside article chrome custom tab.
 
-//        Log.i(TAG, "update");
         ArticleEntry articleEntry = (ArticleEntry) arg;
         presenter.addToFavourites(articleEntry);
     }
 
     private void setActionBar() {
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(R.string.title_articles_fragment);
         }
     }
-
 }
