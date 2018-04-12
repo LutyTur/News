@@ -14,7 +14,6 @@ android {
         applicationId "com.example.maciej1.news"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +28,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    buildToolsVersion '27.0.3'
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
+    }
 }
 
 repositories {
@@ -37,45 +42,33 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.ext.supportLibraryVersion"
-
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.supportLibraryVersion"
     implementation "com.android.support:cardview-v7:$rootProject.ext.supportLibraryVersion"
     implementation "com.android.support:customtabs:$rootProject.ext.supportLibraryVersion"
-
-    implementation "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
-    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
-
-    implementation "com.hannesdorfmann.mosby:mvp:$rootProject.ext.mosbyLibraryVersion"
-    implementation "com.hannesdorfmann.mosby:viewstate:$rootProject.ext.mosbyLibraryVersion"
-
     implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
-
+    implementation "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+    implementation "com.hannesdorfmann.mosby:mvp:$rootProject.ext.mosbyLibraryVersion"
+    implementation "com.hannesdorfmann.mosby:viewstate:$rootProject.ext.mosbyLibraryVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxjavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxandroidVersion"
-
     implementation "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
-
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.interceptorVersion"
-
-
     implementation "com.google.firebase:firebase-crash:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-core:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-auth:$rootProject.ext.firebaseVersion"
     implementation "com.google.firebase:firebase-database:$rootProject.ext.firebaseVersion"
-
-
     implementation "com.firebaseui:firebase-ui:$rootProject.ext.firebaseUiVersion"
-
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
-
     implementation 'com.google.code.gson:gson:2.8.0'
     compileOnly 'org.glassfish:javax.annotation:10.0-b28'
 

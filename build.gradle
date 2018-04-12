@@ -4,10 +4,6 @@ buildscript {
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
         google()
     }
     dependencies {
@@ -24,12 +20,14 @@ buildscript {
 
 allprojects {
     repositories {
+        google()
         jcenter()
-        maven { url 'https://maven.google.com' }
+//        maven { url 'https://maven.google.com' }
         maven {
             url 'https://maven.google.com/'
             name 'Google'
         }
+        maven { url 'https://maven.fabric.io/public' }
     }
 }
 
@@ -43,7 +41,6 @@ ext {
     targetSdkVersion = 27
     buildToolsVersion = "27.0.3"
     supportLibraryVersion = "27.1.1"
-
     daggerVersion = "2.6"
     mosbyLibraryVersion = "2.0.1"
     butterknifeVersion = "8.8.1"
