@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -160,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
                 .findViewById(R.id.profile_picture_id);
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
-            menuItem.setChecked(true);
 
             switch (menuItem.getItemId()) {
                 case R.id.nav_sign_in:
@@ -173,12 +173,14 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager()
                             .beginTransaction()
                             .replace(R.id.content_frame, new FavouritesFragment(), FAVOURITES_FRAGMENT_TAG)
+                            .addToBackStack(null)
                             .commit();
                     break;
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
+
+            return false;
         });
     }
 

@@ -7,5 +7,4 @@
     <string name="title_sources_fragment">News sources</string>
     <string name="title_articles_fragment">News articles</string>
     <string name="title_favourites_fragment">Favourites</string>
-    <string name="news_api_key">e32cea46f0314579835c7ad333523fa6</string>
 </resources>
