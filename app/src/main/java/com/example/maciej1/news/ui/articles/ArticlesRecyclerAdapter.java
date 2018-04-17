@@ -42,6 +42,7 @@ public class ArticlesRecyclerAdapter extends RecyclerView.Adapter<ArticlesRecycl
     public void onBindViewHolder(ArticlesViewHolder holder, int position) {
         final ArticleEntry articleEntry = articlesList.get(position);
 
+        //TODO Fatal Exception: java.lang.IllegalArgumentException: Path must not be empty.
         Picasso.with(holder.itemView.getContext())
                 .load(articleEntry.getUrlToImage()).into(holder.article_image);
         holder.title.setText(articleEntry.getTitle());

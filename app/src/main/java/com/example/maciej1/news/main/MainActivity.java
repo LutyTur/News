@@ -1,13 +1,20 @@
 package com.example.maciej1.news.main;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -15,18 +22,17 @@ import com.example.maciej1.news.R;
 import com.example.maciej1.news.ui.favourites.FavouritesFragment;
 import com.example.maciej1.news.ui.sources.SourcesFragment;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.ResultCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
-import java.util.Arrays;
 import java.util.Collections;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
@@ -40,59 +46,54 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
 
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    private TextView navDrawerTextView;
+    private ImageView navDrawerImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        setupNavDrawer();
         setupFirebaseAnalytics();
         setupFirebaseAuthentication();
-
-        setContentView(R.layout.activity_main);
+        setupActionBar();
 
         if (savedInstanceState == null) {
             loadSourcesFragment(new SourcesFragment());
         }
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_bar_menu, menu);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_log_in:
-                if (firebaseAuth.getCurrentUser() == null) {
-                    inflateSignInActivity();
+            case android.R.id.home:
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
                 } else {
-                    signOut();
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
                 return true;
-            case R.id.action_favourites:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_frame, new FavouritesFragment(), FAVOURITES_FRAGMENT_TAG)
-                        .commit();
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (firebaseAuth.getCurrentUser() == null) {
-            menu.findItem(R.id.action_log_in).setTitle(R.string.sign_in);
-        } else {
-            menu.findItem(R.id.action_log_in).setTitle(R.string.sign_out);
-        }
-        return true;
     }
 
     @Override
@@ -103,28 +104,24 @@ public class MainActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             // Successfully signed in
-            if (resultCode == ResultCodes.OK) {
+            if (resultCode == RESULT_OK) {
                 Toast.makeText(this, "Signed in", Toast.LENGTH_SHORT).show();
-
-                return;
             } else {
                 // Sign in failed
-                if (response == null) {
-                    // User pressed back button
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    //showSnackbar(R.string.no_internet_connection);
-                    return;
-                }
-
-                if (response.getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    //showSnackbar(R.string.unknown_error);
-                    return;
-                }
             }
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        attachAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        detachAuthStateListener(authStateListener);
     }
 
     private void inflateSignInActivity() {
@@ -132,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(false)
-                        .setProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                        .setAvailableProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                         .build(),
                 RC_SIGN_IN);
     }
@@ -154,6 +151,37 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, sourcesFragment, SOURCES_FRAGMENT_TAG).commit();
     }
 
+    private void setupNavDrawer() {
+        navDrawerTextView = navigationView
+                .getHeaderView(0)
+                .findViewById(R.id.nav_header_title);
+        navDrawerImageView = navigationView
+                .getHeaderView(0)
+                .findViewById(R.id.profile_picture_id);
+
+        navigationView.setNavigationItemSelectedListener(menuItem -> {
+            menuItem.setChecked(true);
+
+            switch (menuItem.getItemId()) {
+                case R.id.nav_sign_in:
+                    inflateSignInActivity();
+                    break;
+                case R.id.nav_sign_out:
+                    signOut();
+                    break;
+                case R.id.nav_favourites:
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.content_frame, new FavouritesFragment(), FAVOURITES_FRAGMENT_TAG)
+                            .commit();
+                    break;
+            }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
+    }
+
     private void setupFirebaseAnalytics() {
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         Fabric.with(this, new Crashlytics());
@@ -162,17 +190,42 @@ public class MainActivity extends AppCompatActivity {
     private void setupFirebaseAuthentication() {
         firebaseAuth = FirebaseAuth.getInstance();
 
-        authStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User signed in
-                } else {
-                    // User signed out
-                }
+        authStateListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                Picasso.with(navigationView.getContext())
+                        .load(user.getPhotoUrl()).into(navDrawerImageView);
+
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.drawer_signed_in);
+                navDrawerTextView.setText(user.getDisplayName());
+            } else {
+                navDrawerImageView.setImageDrawable(new ColorDrawable(Color.TRANSPARENT));
+                navDrawerTextView.setText("");
+
+                navigationView.getMenu().clear();
+                navigationView.inflateMenu(R.menu.drawer_signed_out);
             }
         };
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        }
+    }
+
+    private void attachAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    private void detachAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+
     }
 }
 
