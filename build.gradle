@@ -2,9 +2,13 @@
 
 buildscript {
     repositories {
-        jcenter()
-        maven { url 'https://maven.fabric.io/public' }
         google()
+        jcenter()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.1'
@@ -51,7 +55,7 @@ ext {
     picassoVersion = "2.5.2"
 
     firebaseVersion = "12.0.1"
-    firebaseUiVersion = "1.2.0"
+    firebaseUiVersion = "3.3.0"
 
     espressoVersion = "2.2.2"
     junitVersion = "4.12"
